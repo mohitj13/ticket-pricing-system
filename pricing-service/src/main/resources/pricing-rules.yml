@@ -1,0 +1,34 @@
+pricing:
+  rules:
+    - ticketType: ADULT
+      basePrice: 25.00
+      description: Standard adult ticket
+    - ticketType: CHILD
+      basePrice: 5.00
+      description: Child ticket (0-10 years)
+    - ticketType: TEEN
+      basePrice: 12.00
+      description: Teen ticket (11-17 years)
+    - ticketType: SENIOR
+      basePrice: 25.00
+      description: Senior citizen ticket (65+ years)
+
+  discounts:
+    - name: Child Discount (3+ tickets)
+      applicableTicketType: CHILD
+      discountPercentage: 25
+      minQuantity: 3
+      condition: MIN_QUANTITY
+      enabled: true
+    - name: Senior Additional Discount
+      applicableTicketType: SENIOR
+      discountPercentage: 30
+      minQuantity: 0
+      condition: TICKET_TYPE
+      enabled: true
+    - name: Group Discount (4+ tickets)
+      applicableTicketType: null  # applies to all
+      discountPercentage: 30
+      minQuantity: 4
+      condition: GROUP_DISCOUNT
+      enabled: false
