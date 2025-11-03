@@ -168,4 +168,40 @@ class TicketProcessingServiceTest {
         verify(pricingService, times(3)).calculateTicketPrice(any(), anyMap());
 
     }
+
+    @Test
+    void processTransaction_shouldReturnTicketsInAlphabeticalOrder() {
+        // Given
+        List<CustomerRequest> customers = List.of(
+                CustomerRequest.builder().name("Child").age(10).build(),
+                CustomerRequest.builder().name("Senior").age(70).build(),
+                CustomerRequest.builder().name("Adult").age(30).build()
+        );
+
+        TicketTransactionRequest request = TicketTransactionRequest.builder()
+                .customers(customers)
+                .transactionId(1234L)
+                .build();
+
+        when(pricingService.calculateTicketPrice(any(), anyMap()))
+                .thenReturn(PriceCalculationResult.builder()
+                        .finalPrice(new BigDecimal("25.00"))
+                        .build());
+
+        // When
+        TicketTransactionResponse result = ticketProcessingService.processTransaction(request);
+
+        // Then
+        assertNotNull(result);
+        assertNotNull(result.getTickets());
+        assertTrue(result.getTickets().size() >= 2, "Should have at least 2 different ticket types");
+
+        // Verify tickets are in alphabetical order
+        for (int i = 0; i < result.getTickets().size() - 1; i++) {
+            String currentType = result.getTickets().get(i).getTicketType().name();
+            String nextType = result.getTickets().get(i + 1).getTicketType().name();
+            assertTrue(currentType.compareTo(nextType) <= 0,
+                    "Tickets should be sorted alphabetically by type. Found " + currentType + " before " + nextType);
+        }
+    }
 }

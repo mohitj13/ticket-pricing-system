@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -164,6 +165,29 @@ class TicketTransactionIntegrationTest {
                 .andExpect(jsonPath("$.tickets[?(@.ticketType=='CHILD')].quantity").value(4))
                 .andExpect(jsonPath("$.tickets[?(@.ticketType=='CHILD')].totalCost").value(12.76));
 
+    }
+
+    @Test
+    void processTicketsTransactions_withJsonFiles() throws Exception {
+        // Read request from JSON file
+        String requestJson = new String(getClass().getResourceAsStream("/request.json").readAllBytes());
+        String expectedResponseJson = new String(getClass().getResourceAsStream("/response.json").readAllBytes());
+
+        // Convert expected response to JsonNode for comparison
+        var expectedResponse = objectMapper.readTree(expectedResponseJson);
+
+        // Perform the request
+        var mvcResult = mockMvc.perform(post("/api/v1/tickets/transactions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Get actual response and convert to JsonNode
+        var actualResponse = objectMapper.readTree(mvcResult.getResponse().getContentAsString());
+
+        // Assert that the actual response matches the expected response
+        assertThat(actualResponse).isEqualTo(expectedResponse);
     }
 
     private CustomerRequest createCustomer(String name, int age) {

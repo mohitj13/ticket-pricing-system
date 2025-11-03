@@ -1,0 +1,22 @@
+{
+  "transactionId": 123,
+  "customers": [
+    {
+      "name": "Adult Customer",
+      "age": 35
+    },
+    {
+      "name": "Teen Customer",
+      "age": 15
+    },
+    {
+      "name": "Child Customer",
+      "age": 8
+    },
+    {
+      "name": "Senior Customer",
+      "age": 70
+    }
+  ]
+}
+

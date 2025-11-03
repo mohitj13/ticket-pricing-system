@@ -44,6 +44,7 @@ public class TicketProcessingService {
         }
 
         BigDecimal totalCost = BigDecimal.ZERO;
+        List<TicketSegment> ticketSegments = new ArrayList<>();
 
         for (Map.Entry<TicketType, Integer> entry : ticketCounts.entrySet()) {
             var ticketTypePrice = pricingService.calculateTicketPrice(entry.getKey(), ticketCounts);
@@ -57,11 +58,13 @@ public class TicketProcessingService {
                                     ).setScale(2, RoundingMode.HALF_UP)
                     )
                     .build();
-            ticketTransactionResponse.getTickets()
-                    .add(ticketSegment);
+            ticketSegments.add(ticketSegment);
             totalCost = totalCost.add(ticketSegment.getTotalCost());
         }
 
+        // Sort tickets by ticket type alphabetically
+        ticketSegments.sort(Comparator.comparing(segment -> segment.getTicketType().name()));
+        ticketTransactionResponse.setTickets(ticketSegments);
         ticketTransactionResponse.setTotalCost(totalCost);
 
         return ticketTransactionResponse;
