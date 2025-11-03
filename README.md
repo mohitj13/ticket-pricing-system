@@ -85,10 +85,10 @@ Key configuration files:
 
 ```bash
 # Run all tests
-mvn test
+mvnw test
 
 # Run specific module tests
-cd ticket-service && mvn test
+cd ticket-service && ..\mvnw test
 ```
 
 ## Ticket Types & Pricing
