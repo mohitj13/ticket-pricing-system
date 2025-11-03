@@ -35,7 +35,7 @@ public class TicketProcessingService {
         Map<TicketType, Integer> ticketCounts = new HashMap<>();
 
         for (CustomerRequest customer : request.getCustomers()) {
-            if (customer.getAge() < 0) {
+            if (customer.getAge() == null || customer.getAge() < 0) {
                 throw new InvalidTransactionException("Invalid age for customer: " + customer.getName());
             }
 

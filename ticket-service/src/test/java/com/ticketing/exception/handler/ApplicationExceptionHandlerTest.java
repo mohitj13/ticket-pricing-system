@@ -6,10 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.mock.http.MockHttpInputMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +45,24 @@ class ApplicationExceptionHandlerTest {
         assertEquals("Invalid transaction data", response.getBody().get("message"));
         assertEquals(400, response.getBody().get("status"));
     }
+
+    @Test
+    void handleHttpMessageNotReadable_shouldReturnBadRequest() {
+        // Given
+        HttpMessageNotReadableException exception =
+                new HttpMessageNotReadableException("Input request validation Failed", new MockHttpInputMessage("".getBytes(StandardCharsets.UTF_8)));
+
+        // When
+        ResponseEntity<Map<String, Object>> response =
+                exceptionHandler.handleHttpMessageNotReadableException(exception);
+
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals( "Input request validation Failed", response.getBody().get("message"));
+        assertEquals(400, response.getBody().get("status"));
+    }
+
 
     @Test
     void handlePricingException_shouldReturnInternalServerError() {
