@@ -17,18 +17,13 @@ A multi-module Spring Boot application for ticket transaction pricing calculatio
 
 ### 1. Build the project
 ```bash
-mvn clean install
-```
-
-### 2. Run with Docker Compose (PostgreSQL)
-```bash
-docker-compose up -d
+mvnw clean install
 ```
 
 ### 3. Run the application
 ```bash
 cd ticket-service
-mvn spring-boot:run
+..\mvnw spring-boot:run
 ```
 
 ### 4. Test the API
@@ -78,6 +73,7 @@ Response -
 - `POST /api/v1/transactions` - Create a new ticket transaction process
 - `GET /actuator/health` - Actuator health endpoint
 - `GET /actuator/prometheus` - Metrics endpoint
+-  http://localhost:8080/swagger-ui/index.html - Swagger Open API Specs
 
 ## Configuration
 
